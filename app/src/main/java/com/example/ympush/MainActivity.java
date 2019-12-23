@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MainActivity.this, permission, 98);
                 } else {
-                    ACManager.init(MainActivity.this,AndroidUtil.getDeviceId(MainActivity.this),"uid","分配的appId");
+                    ACManager.openTask(MainActivity.this,AndroidUtil.getDeviceId(MainActivity.this),"uid","分配的appId");
 
                 }
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 98 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            ACManager.init(MainActivity.this,AndroidUtil.getDeviceId(MainActivity.this),"uid","分配的appId");
+            ACManager.openTask(MainActivity.this,AndroidUtil.getDeviceId(MainActivity.this),"uid","分配的appId");
         }
     }
 }
