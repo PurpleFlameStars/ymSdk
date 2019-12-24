@@ -1,6 +1,7 @@
 package com.example.ympush;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -30,6 +31,24 @@ public class MainActivity extends AppCompatActivity {
                     ACManager.openTask(MainActivity.this,AndroidUtil.getDeviceId(MainActivity.this),"uid","分配的appId");
 
                 }
+
+            }
+        });
+
+
+        findViewById(R.id.cummon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this,CommonActivity.class));
+
+            }
+        });
+        findViewById(R.id.applet).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startActivity(new Intent(MainActivity.this,AppletActivity.class));
 
             }
         });

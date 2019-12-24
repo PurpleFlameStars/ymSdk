@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="120dp"
+    android:layout_height="100dp"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center"
+    android:background="@drawable/load_dialog_bg"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.ydk.show.view.LoadingView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        app:frame_count="8"
+        app:frame_interval="160"
+        android:background="@drawable/loading_background" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/please_wait"
+        android:textColor="#888888"
+        android:textSize="14sp" />
+
+</LinearLayout>
