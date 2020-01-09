@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        findViewById(R.id.apple_api).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ACManager.openAppletTask(MainActivity.this,"1233","*EFvr7Zt$GUhP7ep");
+
+            }
+        });
     }
 
     @Override

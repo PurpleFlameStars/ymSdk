@@ -41,7 +41,7 @@ public class CommonActivity extends BaseActivity {
         ymShowAdapter.setClickListener(new YmShowAdapter.IsClickListener() {
             @Override
             public void click(DataListBean adData) {
-               ApiManager.getInstance(CommonActivity.this).item(CommonActivity.this,adData.getName());
+               ApiManager.getInstance(CommonActivity.this).itemTask(CommonActivity.this,adData.getName(),1);
             }
         });
         request();
