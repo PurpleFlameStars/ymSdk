@@ -35,6 +35,6 @@
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="小程序UI任务" />
+        android:text="高额小程序UI任务" />
 
 </LinearLayout>
