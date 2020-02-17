@@ -28,7 +28,7 @@
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="小程序任务" />
+        android:text="接口小程序任务" />
     <Button
         android:id="@+id/apple_api"
         android:layout_marginTop="20dp"

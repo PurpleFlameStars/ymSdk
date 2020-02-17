@@ -1,93 +1,105 @@
 package com.example.ympush;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import com.example.ympush.adapter.YmShowAdapter;
+import com.example.ympush.adapter.MyAdapter;
 import com.ydk.show.ApiManager;
+import com.ydk.show.bean.AppletDataBean;
 import com.ydk.show.bean.DataListBean;
 import com.ydk.show.listener.AdListener;
+import com.ydk.show.listener.AppletTaskListener;
+import com.ydk.show.listener.QueryTaskListener;
 
 import java.util.List;
 
 public class AppletActivity extends BaseActivity {
-    private YmShowAdapter ymShowAdapter;
-    private String[] permission = {Manifest.permission.READ_PHONE_STATE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private ListView recyclerView;
+    private MyAdapter taskAdapter;
+    private String uid;
+    private String appKey;
+    private String key;
+    private int status;
+    private String myCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(AppletActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AppletActivity.this, permission, 98);
-        } else {
-            ApiManager.getInstance(AppletActivity.this).init(AppletActivity.this,AndroidUtil.getDeviceId(AppletActivity.this),"1333","LdJk9ZC1@IxMHzYI");
-        }
-
-        setContentView(R.layout.activity_common);
-        RecyclerView viewById = findViewById(R.id.show);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        viewById.setLayoutManager(linearLayoutManager);
-        ymShowAdapter = new YmShowAdapter();
-        viewById.setAdapter(ymShowAdapter);
-        ymShowAdapter.setClickListener(new YmShowAdapter.IsClickListener() {
+        setContentView(R.layout.activity_applet);
+        Intent intent = getIntent();
+        uid = intent.getStringExtra("uid");
+        appKey = intent.getStringExtra("app_key");
+        key = intent.getStringExtra("key");
+        recyclerView = findViewById(R.id.applet_task);
+        taskAdapter = new MyAdapter();
+        recyclerView.setAdapter(taskAdapter);
+        taskAdapter.setClickListener(new MyAdapter.IsClickListener() {
             @Override
-            public void click(DataListBean adData) {
-               ApiManager.getInstance(AppletActivity.this).itemApplet(AppletActivity.this,adData.getName());
+            public void click(AppletDataBean adData) {
+                status = adData.getStatus();
+                myCode = adData.getMycode();
+               ApiManager.getInstance(AppletActivity.this).itemApplet(AppletActivity.this,adData);
             }
         });
-        request();
+
+        // request(uid, appKey);
     }
 
-    private void request() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!TextUtils.isEmpty(myCode)){
+            requestSuccess(appKey);
+            myCode="";
+        }
+
+        request(uid,appKey);
+    }
+
+    private void request(String uid, String appKey){
         showLoadingDialog();
-        ApiManager.getInstance(AppletActivity.this).getAppletCommonTask(AppletActivity.this, new AdListener() {
+        ApiManager.getInstance(this).getAppletCommonTask(uid,appKey,key ,new AppletTaskListener() {
             @Override
-            public void onSuccess(final List<DataListBean> data) {
+            public void onSuccess(List<AppletDataBean> list) {
+                dismissLoadingDialog();
+                if (list!=null && list.size()>0){
+                    taskAdapter.setList(list,AppletActivity.this);
+                    taskAdapter.notifyDataSetChanged();
+                }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (data!=null && data.size()>0){
-                            dismissLoadingDialog();
-                            ymShowAdapter.setList(data);
-                            ymShowAdapter.notifyDataSetChanged();
-                        }
-
-                    }
-                });
             }
 
             @Override
             public void onFailure() {
                 dismissLoadingDialog();
             }
+        });
+    }
 
+    private void requestSuccess(String appKey){
+        ApiManager.requestTaskStatus(appKey, status, myCode, new QueryTaskListener() {
             @Override
-            public void onEmpty() {
+            public void onTaskSuccess(int i) {
+                Toast.makeText(AppletActivity.this, "恭喜完成小程序体验任务，+" + i, Toast.LENGTH_SHORT).show();
 
             }
-        },1);
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 98 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            ApiManager.getInstance(AppletActivity.this).init(AppletActivity.this,AndroidUtil.getDeviceId(AppletActivity.this),"1333","LdJk9ZC1@IxMHzYI");
-        }
-    }
+            @Override
+            public void onTaskFailure() {
+                Toast.makeText(AppletActivity.this,"您体验小程序时间不够，请重新体验", Toast.LENGTH_SHORT).show();
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        ApiManager.getInstance(AppletActivity.this).onDestroy(AppletActivity.this);
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
     }
 }

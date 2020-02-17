@@ -47,8 +47,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.applet).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this,AppletActivity.class));
+              Intent intent=  new Intent(MainActivity.this,AppletActivity.class);
+                intent.putExtra("uid", "1234");
+                intent.putExtra("app_key","*EFvr7Zt$GUhP7ep" );
+                intent.putExtra("key", "1%G88@0V#8&AjV&CJGzifqw0qXo2Hf^s");
+                startActivity(intent);
 
             }
         });
